@@ -46,7 +46,7 @@ namespace _2024_WpfApp3
         private void DisplayDrinkMenu(Dictionary<string, int> drinks)
         {
             StackPanel_DrinkMenu.Children.Clear();
-            StackPanel_DrinkMenu.Height = 42*drinks.Count;
+            StackPanel_DrinkMenu.Height = 42 * drinks.Count;
             foreach (var drink in drinks)
             {
                 var sp = new StackPanel
@@ -136,7 +136,8 @@ namespace _2024_WpfApp3
             double total = 0.0;
             double sellPrice = 0.0;
 
-            ResultTextBlock.Text += $"取餐方式：{takeout}\n";
+            string orderMessage = "";
+            orderMessage += $"取餐方式：{takeout}\n";
 
             int Num = 1;
 
@@ -148,7 +149,7 @@ namespace _2024_WpfApp3
 
                 int subTotal = price * quanity;
                 total += subTotal;
-                ResultTextBlock.Text += $"{Num}. {drinkName} x {quanity}杯，總共{subTotal}元\n";
+                orderMessage += $"{Num}. {drinkName} x {quanity}杯，總共{subTotal}元\n";
                 Num++;
             }
             if (total >= 500)
@@ -163,8 +164,32 @@ namespace _2024_WpfApp3
                 sellPrice = total;
                 sellPrice *= 0.9;
             }
-            ResultTextBlock.Text += $"總金額：{total}元\n";
-            ResultTextBlock.Text += $"{discountMessage}，實付金額：{sellPrice}元\n";
+            orderMessage += $"總金額：{total}元\n";
+            orderMessage += $"{discountMessage}，實付金額：{sellPrice}元\n";
+            ResultTextBlock.Text = orderMessage;
+            SaveOrder(orderMessage);
+        }
+
+        private void SaveOrder(string orderMessage)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "文字檔案|*.txt|所有文件|*.*";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string fileName = saveFileDialog.FileName;
+                try
+                {
+                    using (StreamWriter sw = new StreamWriter(fileName))
+                    {
+                        sw.WriteLine(orderMessage);
+                    }
+                    MessageBox.Show("訂單已成功儲存");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"儲存檔案時發生錯誤：{ex.Message}");
+                }
+            }
         }
     }
 }
