@@ -12,9 +12,12 @@
             <ColumnDefinition Width="91*"/>
         </Grid.ColumnDefinitions>
         <StackPanel x:Name="StackPanel_DrinkMenu" Margin="10,112,0,0" Background="#FFF8F9E0" Height="240" VerticalAlignment="Top" HorizontalAlignment="Left" Width="437"/>
-        <Button x:Name="OrderButton" Content="結帳" HorizontalAlignment="Left" Height="198" Margin="469,164,0,0" VerticalAlignment="Top" Width="153" FontSize="48" FontFamily="Arial Black"/>
+        <Button x:Name="OrderButton" Content="結帳" HorizontalAlignment="Left" Height="198" Margin="469,164,0,0" VerticalAlignment="Top" Width="153" FontSize="48" FontFamily="Arial Black" Click="OrderButton_Click"/>
         <GroupBox HorizontalAlignment="Left" Height="78" Header="選擇內用還外帶" Margin="10,10,0,0" VerticalAlignment="Top" Width="437" BorderBrush="#FFBDFFD0" Background="#FFBDFFD0" FontSize="18" FontFamily="Arial Black">
-            <StackPanel Height="34" VerticalAlignment="Center" Margin="10,0,4,0" Orientation="Horizontal"/>
+            <StackPanel Height="34" VerticalAlignment="Center" Margin="10,0,4,0" Orientation="Horizontal">
+                <RadioButton Content="內用" Height="31" Width="96" Checked="RadioButton_Checked"/>
+                <RadioButton Content="外帶" Height="31" Width="96" Checked="RadioButton_Checked"/>
+            </StackPanel>
         </GroupBox>
         <TextBlock x:Name="ResultTextBlock" HorizontalAlignment="Left" Height="156" Margin="10,452,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="583" FontSize="22" Background="#FFF3C1A5" Text=""/>
 
