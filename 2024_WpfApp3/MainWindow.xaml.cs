@@ -149,7 +149,7 @@ namespace _2024_WpfApp3
                 sellPrice *= 0.9;
             }
             ResultTextBlock.Text += $"總金額：{total}元\n";
-            ResultTextBlock.Text += $"{discountMessage}，實付金額：{{sellPrice}}元\n";
+            ResultTextBlock.Text += $"{discountMessage}，實付金額：{sellPrice}元\n";
         }
 
 
