@@ -9,16 +9,7 @@ namespace _2024_WpfApp3
 {
     public partial class MainWindow : Window
     {
-        Dictionary<string, int> drinks = new Dictionary<string, int>
-        {
-            {"紅茶　",10 },
-            {"綠茶　",15},
-            {"奶茶　",20},
-            {"冬瓜茶",25},
-            {"咖啡　",30},
-            {"拿鐵　",40},
-            {"水果茶",50}
-        };
+        Dictionary<string, int> drinks = new Dictionary<string, int>();
 
         string takeout = "";
         Dictionary<string, int> orders = new Dictionary<string, int>();
@@ -27,11 +18,35 @@ namespace _2024_WpfApp3
         {
             InitializeComponent();
 
+            AddNewDrink(drinks);
+
             DisplayDrinkMenu(drinks);
         }
 
+        private void AddNewDrink(Dictionary<string, int> drinks)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "選擇飲料品項檔案";
+            openFileDialog.Filter = "CSV文件|*.csv|文字檔案|*.txt|所有文件|*.*";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string fileName = openFileDialog.FileName;
+                string[] lines = File.ReadAllLines(fileName);
+
+                foreach (var line in lines)
+                {
+                    string[] tokens = line.Split(',');
+                    string drinkName = tokens[0];
+                    int price = Convert.ToInt32(tokens[1]);
+                    drinks.Add(drinkName, price);
+                }
+            }
+        }
         private void DisplayDrinkMenu(Dictionary<string, int> drinks)
         {
+            StackPanel_DrinkMenu.Children.Clear();
+            StackPanel_DrinkMenu.Height = 42*drinks.Count;
             foreach (var drink in drinks)
             {
                 var sp = new StackPanel
@@ -149,10 +164,7 @@ namespace _2024_WpfApp3
                 sellPrice *= 0.9;
             }
             ResultTextBlock.Text += $"總金額：{total}元\n";
-            ResultTextBlock.Text += $"{discountMessage}，實付金額：{{sellPrice}}元\n";
+            ResultTextBlock.Text += $"{discountMessage}，實付金額：{sellPrice}元\n";
         }
-
-
     }
-
 }
