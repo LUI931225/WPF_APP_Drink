@@ -2,6 +2,8 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Data;
+using Microsoft.Win32;
+using System.IO;
 
 namespace _2024_WpfApp3
 {
@@ -9,15 +11,18 @@ namespace _2024_WpfApp3
     {
         Dictionary<string, int> drinks = new Dictionary<string, int>
         {
-            {"紅茶　", 10},
-            {"奶茶　", 20},
-            {"綠茶　", 15},
-            {"冬瓜茶", 25},
-            {"咖啡　", 30},
-            {"拿鐵　", 40},
-            {"水果茶", 50}
+            {"紅茶　",10 },
+            {"綠茶　",15},
+            {"奶茶　",20},
+            {"冬瓜茶",25},
+            {"咖啡　",30},
+            {"拿鐵　",40},
+            {"水果茶",50}
         };
+
         string takeout = "";
+        Dictionary<string, int> orders = new Dictionary<string, int>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -25,7 +30,7 @@ namespace _2024_WpfApp3
             DisplayDrinkMenu(drinks);
         }
 
-        private void DisplayDrinkMenu(Dictionary<string,int> drinks)
+        private void DisplayDrinkMenu(Dictionary<string, int> drinks)
         {
             foreach (var drink in drinks)
             {
@@ -44,10 +49,10 @@ namespace _2024_WpfApp3
                     FontFamily = new FontFamily("Arial Black"),
                     FontSize = 18,
                     Foreground = Brushes.Blue,
-                    Margin = new Thickness(0,0,10,0),
+                    Margin = new Thickness(0, 0, 10, 0),
                     VerticalContentAlignment = VerticalAlignment.Center
                 };
-                
+
                 var sl = new Slider
                 {
                     Width = 150,
@@ -79,7 +84,75 @@ namespace _2024_WpfApp3
 
                 StackPanel_DrinkMenu.Children.Add(sp);
                 StackPanel_DrinkMenu.Height = drinks.Count * 40 + 8;
+                ResultTextBlock.Margin = new Thickness(0, drinks.Count * 40 + 145, 0, 0);
             }
         }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            var rb = sender as RadioButton;
+            if ((rb.IsChecked == true))
+            {
+                takeout = rb.Content.ToString();
+                //MessageBox.Show($"取餐方式：{takeout}");
+            }
+        }
+
+        private void OrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            ResultTextBlock.Text = "";
+            string discountMessage = "";
+            //確認所有訂單品項
+            orders.Clear();
+            for (int i = 0; i < StackPanel_DrinkMenu.Children.Count; i++)
+            {
+                var sp = StackPanel_DrinkMenu.Children[i] as StackPanel;
+                var cb = sp.Children[0] as CheckBox;
+                var sl = sp.Children[1] as Slider;
+                var lb = sp.Children[2] as Label;
+
+                if (cb.IsChecked == true && sl.Value > 0)
+                {
+                    orders.Add(cb.Content.ToString(), int.Parse(lb.Content.ToString()));
+                }
+            }
+            //顯示訂單細項，計算總金額
+
+            double total = 0.0;
+            double sellPrice = 0.0;
+
+            ResultTextBlock.Text += $"取餐方式：{takeout}\n";
+
+            int Num = 1;
+
+            foreach (var item in orders)
+            {
+                string drinkName = item.Key.Split(' ')[0];
+                int quanity = item.Value;
+                int price = drinks[drinkName];
+
+                int subTotal = price * quanity;
+                total += subTotal;
+                ResultTextBlock.Text += $"{Num}. {drinkName} x {quanity}杯，總共{subTotal}元\n";
+                Num++;
+            }
+            if (total >= 500)
+            {
+                discountMessage = "滿500元，打8折";
+                sellPrice = total;
+                sellPrice *= 0.8;
+            }
+            else if (total >= 300)
+            {
+                discountMessage = "滿300元，打9折";
+                sellPrice = total;
+                sellPrice *= 0.9;
+            }
+            ResultTextBlock.Text += $"總金額：{total}元\n";
+            ResultTextBlock.Text += $"{discountMessage}，實付金額：{{sellPrice}}元\n";
+        }
+
+
     }
+
 }
